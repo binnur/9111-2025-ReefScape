@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.DriveConstants;;
@@ -62,6 +63,11 @@ public class DriveSubsystem extends SubsystemBase {
         () -> {
           /* one-time action goes here */
         });
+  }
+  public Command driveArcade(DriveSubsystem driveA, DoubleSupplier xSpeed, DoubleSupplier zRotation) {
+    return Commands.run(
+      () -> drive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble()), driveA);
+  
   }
 
   /**
