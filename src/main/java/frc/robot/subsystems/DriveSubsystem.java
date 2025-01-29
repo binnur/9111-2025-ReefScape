@@ -34,7 +34,7 @@ public class DriveSubsystem extends SubsystemBase {
     rightLeader = new SparkMax(DriveConstants.RIGHT_LEADER_ID, MotorType.kBrushed);
     rightFollower = new SparkMax(DriveConstants.RIGHT_FOLLOWER_ID, MotorType.kBrushed);
 
-    drive = new DifferentialDrive(leftLeader, leftLeader);
+    drive = new DifferentialDrive(leftLeader, rightLeader);
 
     leftLeader.setCANTimeout(250);
     rightLeader.setCANTimeout(250);
@@ -49,6 +49,16 @@ public class DriveSubsystem extends SubsystemBase {
     leftFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     config.follow(rightLeader);
     rightFollower.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+     // Remove following, then apply config to right leader
+     config.disableFollowerMode();
+     rightLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+     // Set conifg to inverted and then apply to left leader. Set Left side inverted
+     // so that postive values drive both sides forward
+     config.inverted(true);
+     leftLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
   }
 
   /**
