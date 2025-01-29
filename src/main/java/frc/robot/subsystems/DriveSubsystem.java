@@ -41,22 +41,29 @@ public class DriveSubsystem extends SubsystemBase {
     leftFollower.setCANTimeout(250);
     rightFollower.setCANTimeout(250);
 
-    SparkMaxConfig config = new SparkMaxConfig();
-    config.voltageCompensation(12);
-    config.smartCurrentLimit(DriveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
+    SparkMaxConfig globalConfig = new SparkMaxConfig();
+    SparkMaxConfig rightLeaderConfig = new SparkMaxConfig();
+    SparkMaxConfig leftLeaderConfig = new SparkMaxConfig();
+    SparkMaxConfig leftFollowerConfig = new SparkMaxConfig();
+    SparkMaxConfig rightFollowerConfig = new SparkMaxConfig();
+    globalConfig.voltageCompensation(12);
+    globalConfig.smartCurrentLimit(DriveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
+    
+    //TODO check motor invert when testing
+    rightLeaderConfig.apply(globalConfig);
 
-    config.follow(leftLeader);
-    leftFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    config.follow(rightLeader);
-    rightFollower.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    leftLeaderConfig.apply(globalConfig);
 
-     // Remove following, then apply config to right leader
-     config.disableFollowerMode();
-     rightLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-     // Set conifg to inverted and then apply to left leader. Set Left side inverted
-     // so that postive values drive both sides forward
-     config.inverted(true);
-     leftLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftFollowerConfig.apply(globalConfig).follow(leftLeader);
+
+    rightFollowerConfig.apply(globalConfig).follow(rightLeader);
+
+    
+
+    leftLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
   }
