@@ -52,7 +52,7 @@ public class RobotContainer {
     // value)
         m_driveSubsystem.setDefaultCommand(
           m_driveSubsystem.driveArcade(
-              m_driveSubsystem, () -> -m_driverController.getRawAxis(0), () -> -m_driverController.getRawAxis(1)));
+              m_driveSubsystem, () -> -m_driverController.getRawAxis(0), () -> m_driverController.getRawAxis(1)));
 
    
 
