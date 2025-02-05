@@ -17,12 +17,20 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants.RollerConstants;
 
 public class RollerSubsystem extends SubsystemBase {
+
+    public static enum RollerState {
+        STOPPED,
+        FORWARD,
+        REVERSE
+      };
+
+
     private final SparkMax rollerMotor;
 
     public RollerSubsystem() {
         rollerMotor = new SparkMax(RollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless);
 
-        // TODO: Do we need to make setCANTimeout ?
+        rollerMotor.setCANTimeout(250);
 
         SparkMaxConfig config = new SparkMaxConfig();
 
@@ -32,5 +40,10 @@ public class RollerSubsystem extends SubsystemBase {
             .smartCurrentLimit(RollerConstants.ROLLER_MOTOR_CURRENT_LIMIT);
 
         rollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        
+
+        // Run motor forward and backward
+        
     }
 }
