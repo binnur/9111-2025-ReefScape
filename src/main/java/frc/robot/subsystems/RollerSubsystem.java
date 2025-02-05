@@ -18,32 +18,45 @@ import frc.robot.Constants.RollerConstants;
 
 public class RollerSubsystem extends SubsystemBase {
 
+    // Enum for roller motor state
     public static enum RollerState {
         STOPPED,
         FORWARD,
         REVERSE
-      };
+    }
 
-
+    // Instance variables
     private final SparkMax rollerMotor;
+    private RollerState rollerState;  // To track the motor's state
+    private double speed;  // Speed value for the motor
 
+    // Constructor to initialize motor and configurations
     public RollerSubsystem() {
         rollerMotor = new SparkMax(RollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless);
+        rollerState = RollerState.STOPPED;  // Initialize the state as STOPPED
 
-        rollerMotor.setCANTimeout(250);
+        rollerMotor.setCANTimeout(250);  // Set timeout for CAN communication
 
         SparkMaxConfig config = new SparkMaxConfig();
-
         config
             .idleMode(IdleMode.kBrake)
             .voltageCompensation(RollerConstants.ROLLER_MOTOR_VOLTAGE_COMP)
             .smartCurrentLimit(RollerConstants.ROLLER_MOTOR_CURRENT_LIMIT);
 
         rollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
 
-        
+    // Method to run the roller motor forward
+    public void runRollerMotorForward(double speed) {
+        this.rollerState = RollerState.FORWARD;
+        this.speed = speed;  // Set the motor speed to the input speed
+        rollerMotor.set(Math.abs(speed));  // Run forward, ensure positive speed
+    }
 
-        // Run motor forward and backward
-        
+    // Method to run the roller motor in reverse
+    public void runRollerMotorReverse(double speed) {
+        this.rollerState = RollerState.REVERSE;
+        this.speed = speed;  // Set the motor speed to the input speed
+        rollerMotor.set(-Math.abs(speed));  // Run reverse, ensure negative speed
     }
 }
