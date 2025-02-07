@@ -10,7 +10,11 @@ import frc.robot.subsystems.DriveSubsystem;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+
 
 
 /**
@@ -27,9 +31,11 @@ public class RobotContainer {
   // The autonomous chooser
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
+
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick m_driverController =
-      new Joystick(OperatorConstants.DRIVER_CONTROLLER_PORT);
+      new Joystick(Constants.OperatorConstants.DRIVER_CONTROLLER_PORT);
 
   
 
@@ -42,6 +48,20 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+
+   
+        
+// Set the default command for the drive subsystem to the command provided by
+    // factory with the values provided by the joystick axes on the driver
+    // controller. The Y axis of the controller is inverted so that pushing the
+    // stick away from you (a negative value) drives the robot forwards (a positive
+    // value)
+        m_driveSubsystem.setDefaultCommand(
+          m_driveSubsystem.driveArcade(
+              m_driveSubsystem, () -> -m_driverController.getRawAxis(0), () -> m_driverController.getRawAxis(1)));
+
+   
+
 
    
         
