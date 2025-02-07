@@ -31,4 +31,11 @@ public class AlgaeArm {
         algaeMotor.set(speed);
     }
 
+    public static enum armState
+    {
+        UP,
+        DOWN
+    };
+    
+    
 }
