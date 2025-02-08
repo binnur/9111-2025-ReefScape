@@ -25,6 +25,8 @@ public class RollerSubsystem extends SubsystemBase {
         REVERSE
     }
 
+    
+
     // Instance variables
     private final SparkMax rollerMotor;
     private RollerState rollerState;  // To track the motor's state
@@ -46,17 +48,10 @@ public class RollerSubsystem extends SubsystemBase {
         rollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    // Method to run the roller motor forward
-    public void runRollerMotorForward(double speed) {
-        this.rollerState = RollerState.FORWARD;
-        this.speed = speed;  // Set the motor speed to the input speed
-        rollerMotor.set(Math.abs(speed));  // Run forward, ensure positive speed
-    }
 
-    // Method to run the roller motor in reverse
-    public void runRollerMotorReverse(double speed) {
-        this.rollerState = RollerState.REVERSE;
-        this.speed = speed;  // Set the motor speed to the input speed
-        rollerMotor.set(-Math.abs(speed));  // Run reverse, ensure negative speed
+
+    // Run the roller motor. Arguments are constants, rollerAlgaeInSpeed, rollerAlgaeOutSpeed
+    public void runRollerMotor(double speed) {
+        rollerMotor.set(speed);  // Run ensure negative speed
     }
 }
