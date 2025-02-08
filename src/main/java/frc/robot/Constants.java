@@ -40,5 +40,9 @@ public final class Constants {
       public static final int ROLLER_MOTOR_CURRENT_LIMIT = 60;
       public static final double ROLLER_MOTOR_VOLTAGE_COMP = 10;
       public static final double ROLLER_EJECT_VALUE = 0.44;
+
+      public static final double rollerAlgaeInSpeed = -0.8;
+      public static final double rollerAlgaeOutSpeed = 0.4;
+
   }
 }
