@@ -7,9 +7,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class IntakeSubsystem extends SubsystemBase {
+public class RollerSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  public IntakeSubsystem() {}
+  public RollerSubsystem() {}
 
   /**
    * Example command factory method.
