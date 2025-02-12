@@ -1,48 +1,59 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.function.DoubleSupplier;
+
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+// import frc.robot.Configs;
+import frc.robot.Constants.RollerConstants;
 
 public class RollerSubsystem extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
-  public RollerSubsystem() {}
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public Command exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
-  }
+    // Enum for roller motor state
+    public static enum RollerState {
+        STOPPED,
+        FORWARD,
+        REVERSE
+    }
 
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
-  }
+    
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    // Instance variables
+    private final SparkMax rollerMotor;
+    private RollerState rollerState;  // To track the motor's state
+    private double speed;  // Speed value for the motor
 
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
+    // Constructor to initialize motor and configurations
+    public RollerSubsystem() {
+        rollerMotor = new SparkMax(RollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless);
+        rollerState = RollerState.STOPPED;  // Initialize the state as STOPPED
+
+        rollerMotor.setCANTimeout(250);  // Set timeout for CAN communication
+
+        SparkMaxConfig config = new SparkMaxConfig();
+        config
+            .idleMode(IdleMode.kBrake)
+            .voltageCompensation(RollerConstants.ROLLER_MOTOR_VOLTAGE_COMP)
+            .smartCurrentLimit(RollerConstants.ROLLER_MOTOR_CURRENT_LIMIT);
+
+        rollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+
+
+    // Run the roller motor. Arguments are constants, rollerAlgaeInSpeed, rollerAlgaeOutSpeed
+    public void runRollerMotor(double speed) {
+        rollerMotor.set(speed);  // Run ensure negative speed
+    }
 }
+

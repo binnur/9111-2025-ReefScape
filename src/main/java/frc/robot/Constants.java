@@ -25,4 +25,34 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
   }
+  public static final class ArmConstants{
+    public static final int ARM_MOTOR_ID = 5;
+    public static final int ARM_MOTOR_CURRENT_LIMIT = 60;
+    public static final double ARM_MOTOR_VOLTAGE_COMP = 10;
+    public static final double ARM_SPEED_DOWN = 0.4;
+    public static final double ARM_SPEED_UP = -0.4;
+    public static final double ARM_HOLD_DOWN = 0.1;
+    public static final double ARM_HOLD_UP = -0.15;
+  }
+
+  public static final class RollerConstants {
+      public static final int ROLLER_MOTOR_ID = 6;
+      public static final int ROLLER_MOTOR_CURRENT_LIMIT = 60;
+      public static final double ROLLER_MOTOR_VOLTAGE_COMP = 10;
+      public static final double ROLLER_EJECT_VALUE = 0.44;
+
+      public static final double rollerAlgaeInSpeed = -0.8;
+      public static final double rollerAlgaeOutSpeed = 0.4;
+  }
+
+  public static final class ArmConstants{
+    public static final int ARM_MOTOR_ID = 5;
+    public static final int ARM_MOTOR_CURRENT_LIMIT = 60;
+    public static final double ARM_MOTOR_VOLTAGE_COMP = 10;
+    public static final double ARM_SPEED_DOWN = 0.4;
+    public static final double ARM_SPEED_UP = -0.4;
+    public static final double ARM_HOLD_DOWN = 0.1;
+    public static final double ARM_HOLD_UP = -0.15;
+  }
 }
+
