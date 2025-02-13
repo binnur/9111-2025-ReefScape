@@ -56,7 +56,7 @@ public class RollerSubsystem extends SubsystemBase {
     // Run the roller motor. Arguments are constants, rollerAlgaeInSpeed, rollerAlgaeOutSpeed
     //@Logged(name = "Roller Motor Speed")
     public void runRollerMotor(double speed) {
-        this.speed = speed; // Track the speed value
-        rollerMotor.set(speed);  // Run the motor with the provided speed
+        this.speed = speed;         // Track the speed value
+        rollerMotor.set(speed);     // Run the motor with the provided speed
     }
 }
