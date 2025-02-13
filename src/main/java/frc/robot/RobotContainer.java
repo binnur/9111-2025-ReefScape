@@ -59,9 +59,15 @@ public class RobotContainer {
               driveSubsystem, () -> -driverController.getRawAxis(0), () -> driverController.getRawAxis(1)));
        
 
-   // RollerSubsystem
+   // RollerSubsystem. TODO:
+   // Add condition that roller may only roll out to eject coral when the arm is in a down position
+   // Add another condition that roller roll in or out when the arm is a down position
+   // Discuss what button to bind the armRoller to with drivers for rolling in and out
     if (driverController.getRawButtonPressed(2)) {
       armRoller.runRollerMotor(Constants.RollerConstants.rollerAlgaeInSpeed);
+    }
+    if (driverController.getRawButtonPressed(1)) {
+      armRoller.runRollerMotor(Constants.RollerConstants.rollerAlgaeOutSpeed);
     }
   }
 
