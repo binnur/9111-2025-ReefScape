@@ -36,17 +36,12 @@ public class RobotContainer {
 
       new Joystick(Constants.OperatorConstants.DRIVER_CONTROLLER_PORT);
 
-    
-
-
-  
-
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
   }
+
 
 
   private void configureBindings() {
@@ -62,15 +57,15 @@ public class RobotContainer {
         driveSubsystem.setDefaultCommand(
           driveSubsystem.driveArcade(
               driveSubsystem, () -> -driverController.getRawAxis(0), () -> driverController.getRawAxis(1)));
-
+       
 
    // RollerSubsystem
     if (driverController.getRawButtonPressed(2)) {
       armRoller.runRollerMotor(Constants.RollerConstants.rollerAlgaeInSpeed);
     }
-
   }
 
+  
   
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

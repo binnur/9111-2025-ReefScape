@@ -1,6 +1,6 @@
-
 package frc.robot.subsystems;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -17,6 +17,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 // import frc.robot.Configs;
 import frc.robot.Constants.RollerConstants;
 
+
+@Logged
 public class RollerSubsystem extends SubsystemBase {
 
     // Enum for roller motor state
@@ -26,11 +28,13 @@ public class RollerSubsystem extends SubsystemBase {
         REVERSE
     }
 
-    
-
     // Instance variables
     private final SparkMax rollerMotor;
+
+    @Logged(name = "Roller State")
     private RollerState rollerState;  // To track the motor's state
+    
+    @Logged(name = "Motor Speed")
     private double speed;  // Speed value for the motor
 
     // Constructor to initialize motor and configurations
@@ -49,11 +53,10 @@ public class RollerSubsystem extends SubsystemBase {
         rollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-
-
     // Run the roller motor. Arguments are constants, rollerAlgaeInSpeed, rollerAlgaeOutSpeed
+    //@Logged(name = "Roller Motor Speed")
     public void runRollerMotor(double speed) {
-        rollerMotor.set(speed);  // Run ensure negative speed
+        this.speed = speed;         // Track the speed value
+        rollerMotor.set(speed);     // Run the motor with the provided speed
     }
 }
-
