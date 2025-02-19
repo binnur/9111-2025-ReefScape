@@ -53,10 +53,8 @@ public class RollerSubsystem extends SubsystemBase {
         rollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    // Run the roller motor. Arguments are constants, rollerAlgaeInSpeed, rollerAlgaeOutSpeed
+
     //@Logged(name = "Roller Motor Speed")
-
-
 
     private void runRollerMotorForward() {
         rollerState = RollerState.FORWARD;
@@ -79,6 +77,7 @@ public class RollerSubsystem extends SubsystemBase {
 
 
 
+      
     public Command runRollerForward() {
         // Inline construction of command goes here.
         // Subsystem::RunOnce implicitly requires `this` subsystem.
