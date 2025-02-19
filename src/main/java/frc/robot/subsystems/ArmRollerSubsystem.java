@@ -15,11 +15,11 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 // import frc.robot.Configs;
-import frc.robot.Constants.RollerConstants;
+import frc.robot.Constants.ArmRollerConstants;
 
 
 @Logged
-public class RollerSubsystem extends SubsystemBase {
+public class ArmRollerSubsystem extends SubsystemBase {
 
     // Enum for roller motor state
     public static enum RollerState {
@@ -38,8 +38,8 @@ public class RollerSubsystem extends SubsystemBase {
     private double speed;  // Speed value for the motor
 
     // Constructor to initialize motor and configurations
-    public RollerSubsystem() {
-        rollerMotor = new SparkMax(RollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless);
+    public ArmRollerSubsystem() {
+        rollerMotor = new SparkMax(ArmRollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless);
         rollerState = RollerState.STOPPED;  // Initialize the state as STOPPED
 
         rollerMotor.setCANTimeout(250);  // Set timeout for CAN communication
@@ -47,8 +47,8 @@ public class RollerSubsystem extends SubsystemBase {
         SparkMaxConfig config = new SparkMaxConfig();
         config
             .idleMode(IdleMode.kBrake)
-            .voltageCompensation(RollerConstants.ROLLER_MOTOR_VOLTAGE_COMP)
-            .smartCurrentLimit(RollerConstants.ROLLER_MOTOR_CURRENT_LIMIT);
+            .voltageCompensation(ArmRollerConstants.ROLLER_MOTOR_VOLTAGE_COMP)
+            .smartCurrentLimit(ArmRollerConstants.ROLLER_MOTOR_CURRENT_LIMIT);
 
         rollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
