@@ -22,14 +22,14 @@ import frc.robot.Constants.DriveConstants;;
 
 @Logged
 public class DriveSubsystem extends SubsystemBase {
-  @Logged(name="Leader Left")
+  //@Logged(name="Leader Left")
   private final SparkMax leftLeader;
   private final SparkMax leftFollower;
-  @Logged(name="Leader Right")
+  //@Logged(name="Leader Right")
   private final SparkMax rightLeader;
   private final SparkMax rightFollower;
 
-  @Logged(name="Differential Drive")
+  //@Logged(name="Differential Drive")
   private final DifferentialDrive drive;
 
   /** Creates a new ExampleSubsystem. */
