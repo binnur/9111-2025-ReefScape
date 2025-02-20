@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -28,6 +29,7 @@ public class DriveSubsystem extends SubsystemBase {
   //@Logged(name="Leader Right")
   private final SparkMax rightLeader;
   private final SparkMax rightFollower;
+ 
 
   //@Logged(name="Differential Drive")
   private final DifferentialDrive drive;
@@ -39,6 +41,8 @@ public class DriveSubsystem extends SubsystemBase {
     leftFollower = new SparkMax(DriveConstants.LEFT_FOLLOWER_ID, MotorType.kBrushed);
     rightLeader = new SparkMax(DriveConstants.RIGHT_LEADER_ID, MotorType.kBrushed);
     rightFollower = new SparkMax(DriveConstants.RIGHT_FOLLOWER_ID, MotorType.kBrushed);
+
+    
 
     drive = new DifferentialDrive(leftLeader, rightLeader);
 
@@ -64,14 +68,70 @@ public class DriveSubsystem extends SubsystemBase {
 
     rightFollowerConfig.apply(globalConfig).follow(rightLeader);
 
+
+
+    // configure encoders
+            // velocityConversionFactor returns rotations per min -- divide by 60.0 for rotation per seconds
+            // FIX?: in setReference() left encoder is counting backwards -- multiplying by -1
+            leftLeaderConfig.encoder
+                .positionConversionFactor(DriveConstants.kDrivePositionConversionFactor)
+                .velocityConversionFactor(DriveConstants.kDriveVelocityConversionFactor / 60.0);
+            rightLeaderConfig.encoder
+                .positionConversionFactor(DriveConstants.kDrivePositionConversionFactor)
+                .velocityConversionFactor(DriveConstants.kDriveVelocityConversionFactor / 60.0);
+
+            // configure closed loop controllers for velocity -- by default written to slot 0
+            leftLeaderConfig.closedLoop
+                // set PID values for position control. Closed loop slot defaults to slot 0
+                .p(DriveConstants.reakKp)
+                .i(DriveConstants.realKi)
+                .d(DriveConstants.realKd)
+                .velocityFF(1.0 / DriveConstants.kEncoderCountsPerRevolution)        // FIXME: 1.0 / 5767 REV example
+                .outputRange(-1, 1);
+ 
+            rightLeaderConfig.closedLoop
+                .p(DriveConstants.reakKp)
+                .i(0.0)
+                .d(DriveConstants.realKd)
+                .velocityFF(1.0 / DriveConstants.kEncoderCountsPerRevolution)        // FIXME: 1.0 / 5767 REV example
+                .outputRange(-1, 1);
+
     
 
-    leftLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    leftFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    rightLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    rightFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftLeader.configure(leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftFollower.configure(leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightLeader.configure(rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightFollower.configure(rightFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
+  }
+  @Logged(name="DriveIOInfo")
+  private final DriveIOInfo ioInfo = new DriveIOInfo();
+  @Logged
+  public static class DriveIOInfo {
+    public double leftPositionInMeters = 0.0;
+    public double leftVelocityInMetersPerSec = 0.0;
+    public double leftAppliedVolts = 0.0;
+    public double leftCurrentAmps = 0.0;
+
+    public double rightPositionInMeters = 0.0;
+    public double rightVelocityInMetersPerSec = 0.0;
+    public double rightAppliedVolts = 0.0;
+    public double rightCurrentAmps = 0.0;
+
+    // TODO: add updateInputs() to this class?
+  }
+
+  private void updateDriveIOInfo() {
+    ioInfo.leftPositionInMeters = leftLeader.getEncoder().getPosition();
+    ioInfo.leftVelocityInMetersPerSec = leftLeader.get();
+    ioInfo.leftAppliedVolts = leftLeader.getAppliedOutput();
+    ioInfo.leftCurrentAmps = leftLeader.getOutputCurrent();
+
+    ioInfo.rightPositionInMeters = rightLeader.getEncoder().getPosition();
+    ioInfo.rightVelocityInMetersPerSec = rightLeader.get();
+    ioInfo.rightAppliedVolts = rightLeader.getAppliedOutput();
+    ioInfo.rightCurrentAmps = rightLeader.getOutputCurrent();  
   }
 
   /**
@@ -106,6 +166,7 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    updateDriveIOInfo();
   }
 
   @Override
