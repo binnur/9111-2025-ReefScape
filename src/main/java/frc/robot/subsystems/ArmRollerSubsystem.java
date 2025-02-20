@@ -60,7 +60,7 @@ public class ArmRollerSubsystem extends SubsystemBase {
 
     private void runRollerMotorForward() {
         rollerState = RollerState.FORWARD;
-        rollerMotor.set(Math.abs(RollerConstants.rollerCoralOutSpeed));
+        rollerMotor.set(Math.abs(ArmRollerConstants.rollerCoralOutSpeed));
       }
 
 
@@ -74,7 +74,7 @@ public class ArmRollerSubsystem extends SubsystemBase {
 
       private void runRollerMotorReverse() {
         rollerState = RollerState.REVERSE;
-        rollerMotor.set(-Math.abs(RollerConstants.rollerGamePieceInSpeed));
+        rollerMotor.set(-Math.abs(ArmRollerConstants.rollerGamePieceInSpeed));
       }
 
       
@@ -97,5 +97,5 @@ public class ArmRollerSubsystem extends SubsystemBase {
         return this.runOnce(this::stopRollerMotor)
                     .withName("Roller/CMD/runRollerStop");
       }
-    }
-}
+  }
+
