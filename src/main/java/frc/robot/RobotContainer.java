@@ -12,6 +12,9 @@ import frc.robot.subsystems.ArmRollerSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 /**
@@ -25,8 +28,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
 
-  public final ArmRollerSubsystem armRoller = new ArmRollerSubsystem();
-
+  @Logged(name = "ArmRoller")
+  public final ArmRollerSubsystem armRoller = new ArmRollerSubsystem(); // Rename the rollersubsystem class to armRollerSubsystem
 
   // The autonomous chooser
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -35,6 +38,9 @@ public class RobotContainer {
   private final Joystick driverController =
 
       new Joystick(Constants.OperatorConstants.DRIVER_CONTROLLER_PORT);
+
+  // Trigger declarations
+  // Trigger button2 =  driverController.button(2);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -58,14 +64,22 @@ public class RobotContainer {
           driveSubsystem.driveArcade(
               driveSubsystem, () -> -driverController.getRawAxis(0), () -> driverController.getRawAxis(1)));
        
+   // RollerSubsystem. TODO:
+   // Add condition that roller may only roll out to eject coral when the arm is in a down position
+   // Add another condition that roller roll in or out when the arm is a down position
+   // Discuss what button to bind the armRoller to with drivers for rolling in and out
 
-   // RollerSubsystem
-    if (driverController.getRawButtonPressed(2)) {
-      armRoller.runRollerMotor(Constants.ArmRollerConstants.rollerAlgaeInSpeed);
-    }
+    //driverController.button(2).onTrue(armRoller.runRoller());
+    // armRoller.runRollerMotor(Constants.RollerConstants.rollerAlgaeInSpeed);
+    // armRoller.runRollerMotor( () -> Constants.RollerConstants.rollerAlgaeInSpeed).withTimeout(1.0);
+
+    new JoystickButton(driverController, OperatorConstants.coralToLevel1)
+      .whileTrue(armRoller.runRollerForward());
+
+    new JoystickButton(driverController, OperatorConstants.intakeGamePiece)
+      .whileTrue(armRoller.runRollerReverse());
+
   }
-
-  
   
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -24,6 +24,8 @@ public final class Constants {
   
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
+    public static final int coralToLevel1 = 2;
+    public static final int intakeGamePiece = 3;
   }
   public static final class ArmConstants{
     public static final int ARM_MOTOR_ID = 5;
@@ -41,8 +43,8 @@ public final class Constants {
       public static final double ROLLER_MOTOR_VOLTAGE_COMP = 10;
       public static final double ROLLER_EJECT_VALUE = 0.44;
 
-      public static final double rollerAlgaeInSpeed = -0.8;
-      public static final double rollerAlgaeOutSpeed = 0.4;
+      public static final double rollerGamePieceInSpeed = -0.8;
+      public static final double rollerCoralOutSpeed = 0.4;
   }
 }
 

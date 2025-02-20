@@ -15,6 +15,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 // import frc.robot.Configs;
+
 import frc.robot.Constants.ArmRollerConstants;
 
 
@@ -39,6 +40,7 @@ public class ArmRollerSubsystem extends SubsystemBase {
 
     // Constructor to initialize motor and configurations
     public ArmRollerSubsystem() {
+
         rollerMotor = new SparkMax(ArmRollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless);
         rollerState = RollerState.STOPPED;  // Initialize the state as STOPPED
 
@@ -53,10 +55,47 @@ public class ArmRollerSubsystem extends SubsystemBase {
         rollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    // Run the roller motor. Arguments are constants, rollerAlgaeInSpeed, rollerAlgaeOutSpeed
+
     //@Logged(name = "Roller Motor Speed")
-    public void runRollerMotor(double speed) {
-        this.speed = speed;         // Track the speed value
-        rollerMotor.set(speed);     // Run the motor with the provided speed
+
+    private void runRollerMotorForward() {
+        rollerState = RollerState.FORWARD;
+        rollerMotor.set(Math.abs(RollerConstants.rollerCoralOutSpeed));
+      }
+
+
+
+      private void stopRollerMotor() {
+        rollerState = RollerState.STOPPED;
+        rollerMotor.set(0.0);
+      }
+
+
+
+      private void runRollerMotorReverse() {
+        rollerState = RollerState.REVERSE;
+        rollerMotor.set(-Math.abs(RollerConstants.rollerGamePieceInSpeed));
+      }
+
+      
+    public Command runRollerForward() {
+        // Inline construction of command goes here.
+        // Subsystem::RunOnce implicitly requires `this` subsystem.
+        return this.startEnd(this::runRollerMotorForward, this::stopRollerMotor)
+                .withName("Roller/CMD/runRollerForward");
+    }
+
+
+    public Command runRollerReverse() {
+        return this.startEnd(this::runRollerMotorReverse, this::stopRollerMotor)
+                    .withName("Roller/CMD/runRollerReverse");
+      }
+
+
+    
+      public Command runRollerStop() {
+        return this.runOnce(this::stopRollerMotor)
+                    .withName("Roller/CMD/runRollerStop");
+      }
     }
 }
