@@ -15,7 +15,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 // import frc.robot.Configs;
-import frc.robot.Constants.RollerConstants;
+
+import frc.robot.Constants.ArmRollerConstants;
 
 
 @Logged
@@ -39,7 +40,8 @@ public class ArmRollerSubsystem extends SubsystemBase {
 
     // Constructor to initialize motor and configurations
     public ArmRollerSubsystem() {
-        rollerMotor = new SparkMax(RollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless);
+
+        rollerMotor = new SparkMax(ArmRollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless);
         rollerState = RollerState.STOPPED;  // Initialize the state as STOPPED
 
         rollerMotor.setCANTimeout(250);  // Set timeout for CAN communication
@@ -47,8 +49,8 @@ public class ArmRollerSubsystem extends SubsystemBase {
         SparkMaxConfig config = new SparkMaxConfig();
         config
             .idleMode(IdleMode.kBrake)
-            .voltageCompensation(RollerConstants.ROLLER_MOTOR_VOLTAGE_COMP)
-            .smartCurrentLimit(RollerConstants.ROLLER_MOTOR_CURRENT_LIMIT);
+            .voltageCompensation(ArmRollerConstants.ROLLER_MOTOR_VOLTAGE_COMP)
+            .smartCurrentLimit(ArmRollerConstants.ROLLER_MOTOR_CURRENT_LIMIT);
 
         rollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -75,8 +77,6 @@ public class ArmRollerSubsystem extends SubsystemBase {
         rollerMotor.set(-Math.abs(RollerConstants.rollerGamePieceInSpeed));
       }
 
-
-
       
     public Command runRollerForward() {
         // Inline construction of command goes here.
@@ -97,4 +97,5 @@ public class ArmRollerSubsystem extends SubsystemBase {
         return this.runOnce(this::stopRollerMotor)
                     .withName("Roller/CMD/runRollerStop");
       }
+    }
 }

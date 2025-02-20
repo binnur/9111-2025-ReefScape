@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -19,15 +20,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.DriveConstants;;
 
+@Logged
 public class DriveSubsystem extends SubsystemBase {
+  //@Logged(name="Leader Left")
   private final SparkMax leftLeader;
   private final SparkMax leftFollower;
+  //@Logged(name="Leader Right")
   private final SparkMax rightLeader;
   private final SparkMax rightFollower;
 
+  //@Logged(name="Differential Drive")
   private final DifferentialDrive drive;
 
   /** Creates a new ExampleSubsystem. */
+  
   public DriveSubsystem() {
     leftLeader = new SparkMax(DriveConstants.LEFT_LEADER_ID, MotorType.kBrushed);
     leftFollower = new SparkMax(DriveConstants.LEFT_FOLLOWER_ID, MotorType.kBrushed);

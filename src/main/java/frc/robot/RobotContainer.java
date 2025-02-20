@@ -31,7 +31,6 @@ public class RobotContainer {
   @Logged(name = "ArmRoller")
   public final ArmRollerSubsystem armRoller = new ArmRollerSubsystem(); // Rename the rollersubsystem class to armRollerSubsystem
 
-
   // The autonomous chooser
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -65,7 +64,6 @@ public class RobotContainer {
           driveSubsystem.driveArcade(
               driveSubsystem, () -> -driverController.getRawAxis(0), () -> driverController.getRawAxis(1)));
        
-
    // RollerSubsystem. TODO:
    // Add condition that roller may only roll out to eject coral when the arm is in a down position
    // Add another condition that roller roll in or out when the arm is a down position
@@ -80,9 +78,8 @@ public class RobotContainer {
 
     new JoystickButton(driverController, OperatorConstants.intakeGamePiece)
       .whileTrue(armRoller.runRollerReverse());
-  }
 
-  
+  }
   
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -37,7 +37,7 @@ public final class Constants {
     public static final double ARM_HOLD_UP = -0.15;
   }
 
-  public static final class RollerConstants {
+  public static final class ArmRollerConstants {
       public static final int ROLLER_MOTOR_ID = 6;
       public static final int ROLLER_MOTOR_CURRENT_LIMIT = 60;
       public static final double ROLLER_MOTOR_VOLTAGE_COMP = 10;
