@@ -19,7 +19,7 @@ import frc.robot.Constants.RollerConstants;
 
 
 @Logged
-public class RollerSubsystem extends SubsystemBase {
+public class ArmRollerSubsystem extends SubsystemBase {
 
     // Enum for roller motor state
     public static enum RollerState {
@@ -38,7 +38,7 @@ public class RollerSubsystem extends SubsystemBase {
     private double speed;  // Speed value for the motor
 
     // Constructor to initialize motor and configurations
-    public RollerSubsystem() {
+    public ArmRollerSubsystem() {
         rollerMotor = new SparkMax(RollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless);
         rollerState = RollerState.STOPPED;  // Initialize the state as STOPPED
 

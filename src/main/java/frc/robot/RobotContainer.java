@@ -8,7 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.epilogue.Logged;
-import frc.robot.subsystems.RollerSubsystem;
+import frc.robot.subsystems.ArmRollerSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,7 +28,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
 
-  public final RollerSubsystem armRoller = new RollerSubsystem(); // Rename the rollersubsystem class to armRollerSubsystem
+  @Logged(name = "ArmRoller")
+  public final ArmRollerSubsystem armRoller = new ArmRollerSubsystem(); // Rename the rollersubsystem class to armRollerSubsystem
 
 
   // The autonomous chooser
