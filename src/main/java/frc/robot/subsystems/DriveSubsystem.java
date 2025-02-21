@@ -19,7 +19,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Constants.DriveConstants;;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Robot;;
 
 @Logged
 public class DriveSubsystem extends SubsystemBase {
@@ -104,6 +105,9 @@ public class DriveSubsystem extends SubsystemBase {
     rightFollower.configure(rightFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
+
+    resetEncoders();
+
   }
   @Logged(name="DriveIOInfo")
   private final DriveIOInfo ioInfo = new DriveIOInfo();
@@ -133,6 +137,16 @@ public class DriveSubsystem extends SubsystemBase {
     ioInfo.rightAppliedVolts = rightLeader.getAppliedOutput();
     ioInfo.rightCurrentAmps = rightLeader.getOutputCurrent();  
   }
+
+
+  public void resetEncoders() {
+    
+    // note in simulation there is a small drift 
+    leftLeader.getEncoder().setPosition(0.0);
+    rightLeader.getEncoder().setPosition(0.0);
+
+    
+  }  
 
   /**
    * Example command factory method.
