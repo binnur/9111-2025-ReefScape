@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.epilogue.Logged;
+import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.ArmRollerSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -30,6 +31,8 @@ public class RobotContainer {
 
   @Logged(name = "ArmRoller")
   public final ArmRollerSubsystem armRoller = new ArmRollerSubsystem(); // Rename the rollersubsystem class to armRollerSubsystem
+
+  public final AlgaeArm algaeArm = new AlgaeArm();
 
   // The autonomous chooser
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -73,11 +76,16 @@ public class RobotContainer {
     // armRoller.runRollerMotor(Constants.RollerConstants.rollerAlgaeInSpeed);
     // armRoller.runRollerMotor( () -> Constants.RollerConstants.rollerAlgaeInSpeed).withTimeout(1.0);
 
-    new JoystickButton(driverController, OperatorConstants.coralToLevel1)
+    new JoystickButton(driverController, OperatorConstants.coralToReef)
       .whileTrue(armRoller.runRollerForward());
 
     new JoystickButton(driverController, OperatorConstants.intakeGamePiece)
       .whileTrue(armRoller.runRollerReverse());
+
+      new JoystickButton(driverController, OperatorConstants.armUp)
+      .whileTrue(algaeArm.ArmUp());
+      new JoystickButton(driverController, OperatorConstants.armDown)
+      .whileTrue(algaeArm.ArmDown());
 
   }
   
