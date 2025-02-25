@@ -54,7 +54,7 @@ public final class Constants {
   }
   public static final class ArmConstants{
     public static final int ARM_MOTOR_ID = 5;
-    public static final int ARM_MOTOR_CURRENT_LIMIT = 60;
+    public static final int ARM_MOTOR_CURRENT_LIMIT = 1;
     public static final double ARM_MOTOR_VOLTAGE_COMP = 10;
     public static final double ARM_SPEED_DOWN = 0.4;
     public static final double ARM_SPEED_UP = -0.4;
