@@ -4,10 +4,13 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -30,6 +33,11 @@ public class DriveSubsystem extends SubsystemBase {
   //@Logged(name="Leader Right")
   private final SparkMax rightLeader;
   private final SparkMax rightFollower;
+
+   // setup closed loop controller
+  private final SparkClosedLoopController leftController;
+  private final SparkClosedLoopController rightController;
+
  
 
   //@Logged(name="Differential Drive")
@@ -43,7 +51,8 @@ public class DriveSubsystem extends SubsystemBase {
     rightLeader = new SparkMax(DriveConstants.RIGHT_LEADER_ID, MotorType.kBrushed);
     rightFollower = new SparkMax(DriveConstants.RIGHT_FOLLOWER_ID, MotorType.kBrushed);
 
-    
+    leftController = leftLeader.getClosedLoopController();
+    rightController = rightLeader.getClosedLoopController();
 
     drive = new DifferentialDrive(leftLeader, rightLeader);
 
@@ -138,6 +147,17 @@ public class DriveSubsystem extends SubsystemBase {
     ioInfo.rightCurrentAmps = rightLeader.getOutputCurrent();  
   }
 
+  public void setVelocity(double leftVelocity, double rightVelocity) {
+    leftController.setReference(leftVelocity, ControlType.kVelocity);
+    rightController.setReference(rightVelocity, ControlType.kVelocity);  
+    
+  }
+
+  public BooleanSupplier isAtDistance(double desiredDistanceInMeters) {
+    return () -> ((Math.abs(leftLeader.getEncoder().getPosition()) >= desiredDistanceInMeters) || 
+                  (Math.abs(rightLeader.getEncoder().getPosition()) >= desiredDistanceInMeters)); 
+  }
+
 
   public void resetEncoders() {
     
@@ -167,6 +187,12 @@ public class DriveSubsystem extends SubsystemBase {
   
   }
 
+  public void stop()
+  {
+    leftLeader.set(0.0);
+    rightLeader.set(0.0);
+  }
+
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
    *
@@ -186,5 +212,15 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+  public Command driveFwdInMetersCmd(DriveSubsystem driveSubsystem, DoubleSupplier distanceInMeters) {
+    return Commands.startRun(
+      this::resetEncoders, 
+      () -> this.setVelocity(DriveConstants.walkingSpeedMetersPerSec, DriveConstants.walkingSpeedMetersPerSec), 
+      driveSubsystem)
+      .until(this.isAtDistance(distanceInMeters.getAsDouble()))
+      .andThen(this::stop)
+      .withName("Drive/CMD/driveFwd 3 meters");
   }
 }
