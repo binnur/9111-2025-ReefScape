@@ -9,6 +9,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -30,6 +32,10 @@ public class AlgaeArm extends SubsystemBase {
       public double motorCurrentAmps = 0.0;
     }
     
+        // Debouncer for current stall detection
+    LinearFilter currenFilter = LinearFilter.movingAverage(10);
+    private double filteredCurrent;
+
     public AlgaeArm() {
         algaeMotor = new SparkMax(ArmConstants.ARM_MOTOR_ID, MotorType.kBrushless);
 
@@ -100,6 +106,29 @@ public class AlgaeArm extends SubsystemBase {
         UP,
         DOWN
     }
+
+     public Command runDebounceArmDownCmd() {
+    Debouncer debounce = new Debouncer(1, Debouncer.DebounceType.kRising);
+
+    // Run roller
+    return runOnce(
+     () -> {
+      // initialize
+      debounce.calculate(false);
+     })
+     .andThen(
+      // set intake to algae intaking speed
+      run( () -> {
+        armDown();
+      })
+        // wait until current spike is detected for more than 1s
+        .until( () -> debounce.calculate(filteredCurrent > 1 )))    // INTAKE_STALL_DETECTION is set to 1
+      .finallyDo(
+        // reduce power to holding state
+       (interrupted) -> {
+        armHoldDown(); // hold arm down speed
+       }); 
+  }
     
     
 }

@@ -51,6 +51,7 @@ public final class Constants {
     public static final int intakeGamePiece = 3;
     public static final int armUp = 6;
     public static final int armDown = 4;
+    public static final int armDownDebouncer = 7;
   }
   public static final class ArmConstants{
     public static final int ARM_MOTOR_ID = 5;
