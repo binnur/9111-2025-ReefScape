@@ -12,6 +12,7 @@ import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.ArmRollerSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -49,6 +50,9 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    configureAutoChooser();   // add autonomous options
+    SmartDashboard.putData("Autonomous Chooser", autoChooser);
+
   }
 
 
@@ -82,11 +86,25 @@ public class RobotContainer {
     new JoystickButton(driverController, OperatorConstants.intakeGamePiece)
       .whileTrue(armRoller.runRollerReverse());
 
-      new JoystickButton(driverController, OperatorConstants.armUp)
+    new JoystickButton(driverController, OperatorConstants.armUp)
       .whileTrue(algaeArm.ArmUp());
-      new JoystickButton(driverController, OperatorConstants.armDown)
+
+    new JoystickButton(driverController, OperatorConstants.armDown)
       .whileTrue(algaeArm.ArmDown());
 
+    new JoystickButton(driverController, OperatorConstants.armDown)
+      .whileTrue(algaeArm.runDebounceArmDownCmd());
+
+  }
+
+  private void configureAutoChooser() {
+    // Set the options to show up in the Dashboard for selecting auto modes. If you
+    // add additional auto modes you can add additional lines here with
+    // autoChooser.addOption
+    autoChooser.setDefaultOption("Do Nothing", Autos.doNothing());
+    autoChooser.addOption("Arcade Drive (no rotation @ 50%)", Autos.driveArcadeCmd(driveSubsystem));
+    autoChooser.addOption("Drive FWD 3 meters", Autos.driveFwd3meters(driveSubsystem));
+    autoChooser.addOption("Reset Encoders",  Autos.resetEncoders(driveSubsystem));
   }
   
   /**

@@ -221,6 +221,6 @@ public class DriveSubsystem extends SubsystemBase {
       driveSubsystem)
       .until(this.isAtDistance(distanceInMeters.getAsDouble()))
       .andThen(this::stop)
-      .withName("Drive/CMD/driveFwd 3 meters");
+      .withName("Drive/CMD/driveFwd");
   }
 }
