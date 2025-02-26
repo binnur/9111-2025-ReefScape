@@ -51,16 +51,16 @@ public final class Constants {
     public static final int intakeGamePiece = 3;
     public static final int armUp = 6;
     public static final int armDown = 4;
-    public static final int armDownDebouncer = 7;
+   // public static final int armDownDebouncer = 7;
   }
   public static final class ArmConstants{
     public static final int ARM_MOTOR_ID = 5;
-    public static final int ARM_MOTOR_CURRENT_LIMIT = 1;
+    public static final int ARM_MOTOR_CURRENT_LIMIT = 9;
     public static final double ARM_MOTOR_VOLTAGE_COMP = 10;
-    public static final double ARM_SPEED_DOWN = 0.5;
-    public static final double ARM_SPEED_UP = -0.5;
-    public static final double ARM_HOLD_DOWN = 0.1;
-    public static final double ARM_HOLD_UP = -0.15;
+    public static final double ARM_SPEED_DOWN = -0.5;
+    public static final double ARM_SPEED_UP = 0.5;
+    public static final double ARM_HOLD_DOWN = 0.0;
+    public static final double ARM_HOLD_UP = -0.0;
   }
 
   public static final class ArmRollerConstants {

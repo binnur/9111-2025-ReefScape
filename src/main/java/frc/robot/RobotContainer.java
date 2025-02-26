@@ -92,8 +92,8 @@ public class RobotContainer {
     new JoystickButton(driverController, OperatorConstants.armDown)
       .whileTrue(algaeArm.ArmDown());
 
-    new JoystickButton(driverController, OperatorConstants.armDown)
-      .whileTrue(algaeArm.runDebounceArmDownCmd());
+   // new JoystickButton(driverController, OperatorConstants.armDownDebouncer)
+     // .whileTrue(algaeArm.runDebounceArmDownCmd());
 
   }
 
