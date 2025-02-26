@@ -19,6 +19,16 @@ public class AlgaeArm extends SubsystemBase {
     private final SparkMax algaeMotor;
     
     private ArmState armState;
+
+    @Logged(name="RollerMotorInfo")
+    private final MotorIOInfo ioInfo = new MotorIOInfo();
+    @Logged
+    public static class MotorIOInfo {
+      public double motorPositionInMeters = 0.0;
+      public double motorVelocityInMetersPerSec = 0.0;
+      public double motorAppliedVolts = 0.0;
+      public double motorCurrentAmps = 0.0;
+    }
     
     public AlgaeArm() {
         algaeMotor = new SparkMax(ArmConstants.ARM_MOTOR_ID, MotorType.kBrushless);
@@ -33,6 +43,20 @@ public class AlgaeArm extends SubsystemBase {
         
         
     }
+
+    private void updateMotorIOInfo() {
+        //ioInfo.leftPositionInMeters = motor.getEncoder().getPosition();
+        ioInfo.motorVelocityInMetersPerSec = algaeMotor.get();
+        ioInfo.motorAppliedVolts = algaeMotor.getAppliedOutput();
+        ioInfo.motorCurrentAmps = algaeMotor.getOutputCurrent();
+    }
+
+    public void periodic()
+    {
+        updateMotorIOInfo();
+
+    }
+
 
     public void armUp()
     {
