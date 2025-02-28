@@ -31,11 +31,11 @@ public class AlgaeArm extends SubsystemBase {
       public double motorAppliedVolts = 0.0;
       public double motorCurrentAmps = 0.0;
     }
-
-    // Debouncer for current stall detection
+    
+        // Debouncer for current stall detection
     LinearFilter currenFilter = LinearFilter.movingAverage(10);
     private double filteredCurrent;
-    
+
     public AlgaeArm() {
         algaeMotor = new SparkMax(ArmConstants.ARM_MOTOR_ID, MotorType.kBrushless);
 
