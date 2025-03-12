@@ -69,7 +69,7 @@ public final class Constants {
       public static final double ROLLER_MOTOR_VOLTAGE_COMP = 10;
       public static final double ROLLER_EJECT_VALUE = 0.44;
 
-      public static final double rollerGamePieceInSpeed = -0.5;
+      public static final double rollerGamePieceInSpeed = -0.8;
       public static final double rollerCoralOutSpeed = 0.5;
   }
 }
