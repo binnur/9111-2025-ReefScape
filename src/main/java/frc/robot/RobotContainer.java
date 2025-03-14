@@ -75,11 +75,11 @@ public class RobotContainer {
 
 
 
-    //BASICALY THE TURN IS TWISTING, TO TURN BACK CHANGE AXIS 2 TO 0
-    //ALSO THE INVERTING SYSTEM IS USING THE SPEED NOB WHEN ITS DOWN ITS FACING FORWARD, BUT WHEN ITS UPWARDS IT WILL SWITCH YOUR FRONT SIDE
+    //  TURN IS TWISTING, TO TURN BACK CHANGE AXIS 2 TO 0
+    // THE INVERTING SYSTEM IS USING THE SPEED NOB WHEN ITS DOWN ITS FACING FORWARD, BUT WHEN ITS UPWARDS IT WILL SWITCH YOUR FRONT SIDE
         driveSubsystem.setDefaultCommand(
           driveSubsystem.driveArcade(
-              driveSubsystem, () -> -driverController.getRawAxis(2) * driverController.getRawAxis(3), () -> -driverController.getRawAxis(1) * driverController.getRawAxis(3)));
+              driveSubsystem, () -> -driverController.getRawAxis(0) * driverController.getRawAxis(3), () -> -driverController.getRawAxis(1) * driverController.getRawAxis(3)));
        
    // RollerSubsystem. TODO:
    // Add condition that roller may only roll out to eject coral when the arm is in a down position
