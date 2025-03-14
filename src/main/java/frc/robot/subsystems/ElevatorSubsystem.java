@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -34,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 //import frc.robot.PositionTracker;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 //import frc.robot.GlobalStates;
 //import frc.robot.Constants.Elevator.ElevatorPosition;
 import frc.robot.Robot;
@@ -51,6 +53,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final SparkMax liftFollowerMotor = new SparkMax(ElevatorConstants.ELEVATOR_FOLLOWER_MOTOR_ID, MotorType.kBrushless);
     private final SparkMax armMotor = new SparkMax(ElevatorConstants.ELEVATOR_ARM_MOTOR_ID, MotorType.kBrushless);
     private SparkMaxConfig liftMotorConfig;
+    @Logged(name = "Desired Target")
+    private double desiredLiftLevel = 0.0;
+    
 
     @Logged(name="control")
     private final ProfiledPIDController pidController = new ProfiledPIDController(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.MOVEMENT_CONSTRAINTS);
@@ -78,10 +83,23 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .idleMode(IdleMode.kBrake)
                 .smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT);
         liftMotorConfig.encoder
-                .positionConversionFactor(ElevatorConstants.ENCODER_ROTATIONS_TO_METERS)
-                .velocityConversionFactor(ElevatorConstants.ENCODER_ROTATIONS_TO_METERS / 60.0);
+                .positionConversionFactor(ElevatorConstants.liftPositionConversionFactor)
+                .velocityConversionFactor(ElevatorConstants.liftVelocityConversionFactor / 60.0);
         liftMotorConfig = new SparkMaxConfig();
         liftMotor.configure(liftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        // Configure follower motor
+        SparkMaxConfig followerConfig = new SparkMaxConfig();
+        followerConfig.inverted(ElevatorConstants.FOLLOWER_MOTOR_INVERTED).idleMode(IdleMode.kBrake);
+        followerConfig.follow(liftMotor, ElevatorConstants.FOLLOWER_MOTOR_INVERTED);
+        liftFollowerMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+         
+        /* 
+        liftFollowerMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        // Set follower to follow leader (invert if needed)
+        liftFollowerMotor.follow(liftMotor, ElevatorConstants.INVERT_FOLLOWER_OUTPUT); // Use boolean constant
+        */
     }
     @Logged(name="Elevator: Lift IOInfo")
     private final ElevatorIOInfo ioInfo = new ElevatorIOInfo();
@@ -95,17 +113,17 @@ public class ElevatorSubsystem extends SubsystemBase {
         public double liftCurrentAmps = 0.0;
     }
 
-    /*private void updateElevatorIOInfo() {
+    private void updateElevatorIOInfo() {
         ioInfo.liftAtPositionInMeters = liftMotor.getEncoder().getPosition();
         ioInfo.liftVelocityInMetersPerSec = liftMotor.get();     // note: does not get updated during simulation use corresponding liftSimVelocity
         ioInfo.liftAppliedVolts = liftMotor.getAppliedOutput();
         ioInfo.liftCurrentAmps = liftMotor.getOutputCurrent();
         // note: ioInfo.liftDesiredPositionMeters updated with the operator control commands
 
-        if (Robot.isSimulatio.n()) {
-            ioInfo.liftSimVelocityInMetersPerSec = elevatorSim.getVelocityMetersPerSecond();
-        }
-    }*/
+        //if (Robot.isSimulatio.n()) {
+        //    ioInfo.liftSimVelocityInMetersPerSec = elevatorSim.getVelocityMetersPerSecond();
+        //}
+    }
 
     private void resetEncoders() 
     {
@@ -160,12 +178,19 @@ public class ElevatorSubsystem extends SubsystemBase {
         }).withName("elevator.moveToCurrentGoal");
     }
 
+    // Runs motors
     public Command moveToSetPointCommand() {
         return run( () -> {
             feedbackVoltage = liftPidController.calculate(getPosition());
             feedforwardVoltage = liftFFController.calculate(liftPidController.getSetpoint().velocity);
+           
 
+           
             // TODO: replace this code with Math.signum function
+
+            if (Math.abs(feedbackVoltage) < 1 && feedbackVoltage != 0) {
+                feedforwardVoltage = Math.signum(feedbackVoltage);
+            }
             // feedforwardVoltage = 0.0;
             // if (feedbackVoltage < 0) {
             //     if (feedbackVoltage > -1) {
@@ -180,6 +205,63 @@ public class ElevatorSubsystem extends SubsystemBase {
 
             setVoltage(feedbackVoltage+feedforwardVoltage);
         }).withName("elevator.moveToCurrentGoal");
+    }
+    /*public boolean didTriggerLiftLimitSwitch() {
+        if (bottomLiftLimitSwitch.get()) {
+            resetEncoders();
+        }
+        return bottomLiftLimitSwitch.get();
+    }*/
+    public boolean liftAtGoal() {
+        return liftPidController.atGoal();
+    }
+
+    public Command moveToPositionCommand(Supplier<ElevatorPosition> goalPositionSupplier) {
+       //ioInfo.liftDesiredPositionInMeters = goalPositionSupplier.get().value;
+       System.out.println("moveToPositionCommand");
+       desiredLiftLevel = goalPositionSupplier.get().value;
+
+        // stop current motion and clear integral values
+        // specify the new goal position to the PID controller 
+        liftPidController.reset(getPosition());
+        liftPidController.setGoal((goalPositionSupplier.get().value));
+
+        // run the motors until target goal is reached
+        return Commands.sequence(
+                            moveToSetPointCommand()
+                                .until( () -> liftAtGoal() ) 
+                        )
+                        .withTimeout(3)
+                        .withName("elevator.moveToPosition");
+    }
+
+    public Command setTargetPositionCommand(ElevatorPosition level) {
+        
+        ElevatorPosition liftLevelTarget;
+         // TODO add arm position & command to setup arm
+         switch (level) {
+            case INTAKE:
+                liftLevelTarget = ElevatorPosition.INTAKE;
+                break;
+            case TOP:
+                liftLevelTarget = ElevatorPosition.TOP;
+                break;
+            case CORAL_L1:
+                liftLevelTarget = ElevatorPosition.CORAL_L1;
+                break;
+            case CORAL_L2:
+                liftLevelTarget = ElevatorPosition.CORAL_L2;
+                break;
+            default: 
+                liftLevelTarget = ElevatorPosition.BOTTOM;
+                break;   
+        }
+
+        return Commands.runOnce( 
+            () -> {
+                System.out.println("setTargetPositionCommand " + liftLevelTarget);
+                moveToPositionCommand( () -> liftLevelTarget);
+            }); 
     }
 
     

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.DriveSubsystem;
@@ -36,6 +37,7 @@ public class RobotContainer {
 
   public final AlgaeArm algaeArm = new AlgaeArm();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+
 
   // The autonomous chooser
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -99,6 +101,12 @@ public class RobotContainer {
 
     new JoystickButton(driverController, OperatorConstants.armDown)
       .whileTrue(algaeArm.ArmDown());
+
+    new JoystickButton(driverController, OperatorConstants.elevatorToL1)
+          .onTrue(elevator.setTargetPositionCommand(ElevatorPosition.CORAL_L1));
+
+    new JoystickButton(driverController, OperatorConstants.elevatorToL2)
+          .onTrue(elevator.setTargetPositionCommand(ElevatorPosition.CORAL_L2));
 
    
 
