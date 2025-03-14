@@ -50,7 +50,7 @@ public final class Constants {
   
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
-    public static final int coralToReef = 2;
+    public static final int coralToReef = 5;
     public static final int intakeGamePiece = 3;
     public static final int armUp = 6;
     public static final int armDown = 4;
