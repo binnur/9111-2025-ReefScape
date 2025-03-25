@@ -85,7 +85,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         liftMotorConfig.encoder
                 .positionConversionFactor(ElevatorConstants.liftPositionConversionFactor)
                 .velocityConversionFactor(ElevatorConstants.liftVelocityConversionFactor / 60.0);
-        liftMotorConfig = new SparkMaxConfig();
         liftMotor.configure(liftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Configure follower motor
@@ -166,7 +165,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .withName("elevator.coastMotorsCommand");
     }
 
-    public void Periodic(){
+    public void periodic(){
         // note: default command moveToSetPointCommand() automatically runs
         //updateElevatorIOInfo();
         
@@ -202,22 +201,20 @@ public class ElevatorSubsystem extends SubsystemBase {
            
 
            
-            // TODO: replace this code with Math.signum function
-
-            if (Math.abs(feedbackVoltage) < 1 && feedbackVoltage != 0) {
+            // Old math.signum function
+            /*
+             * if (Math.abs(feedbackVoltage) < 1 && feedbackVoltage != 0) {
                 feedforwardVoltage = Math.signum(feedbackVoltage);
-            }
-            // feedforwardVoltage = 0.0;
-            // if (feedbackVoltage < 0) {
-            //     if (feedbackVoltage > -1) {
-            //         feedforwardVoltage = -1;
-            //     }
-            // }
-            // else if (feedbackVoltage > 0) {
-            //     if (feedbackVoltage < 1) {
-            //         feedforwardVoltage = 1;
-            //     }
-            // }
+                
+             * 
+             */
+
+            // CORRECTED CODE (uses velocity only)
+            feedforwardVoltage = liftFFController.calculate(
+                liftPidController.getSetpoint().velocity  // No acceleration needed!
+            );
+            
+            
 
             setVoltage(feedbackVoltage+feedforwardVoltage);
         }).withName("elevator.moveToCurrentGoal");
@@ -274,11 +271,9 @@ public class ElevatorSubsystem extends SubsystemBase {
                 break;   
         }
 
-        return Commands.runOnce( 
-            () -> {
-                System.out.println("Running setTargetPositionCommand " + liftLevelTarget);
-                moveToPositionCommand( () -> liftLevelTarget);
-            }); 
+        
+            System.out.println("Running setTargetPositionCommand " + liftLevelTarget);
+            return moveToPositionCommand( () -> liftLevelTarget);
     }
 
     

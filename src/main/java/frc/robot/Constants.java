@@ -131,6 +131,14 @@ public final class Constants {
 
         public static final int CURRENT_LIMIT = 4;
 
+        /*
+        kS = Static friction (voltage to overcome stiction)
+        kG = Gravity compensation (voltage to counteract gravity)
+        kV = Velocity gain (voltage per m/s to maintain speed)
+        kA = Acceleration gain (voltage per m/s² to accelerate)
+        
+        */
+
         public static final double kP = 10; // TODO
         public static final double kI = 0.01; // TODO
         public static final double kD = 0.01; // TODO
