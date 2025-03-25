@@ -56,7 +56,7 @@ public final class Constants {
     public static final int armDown = 4;
    // public static final int armDownDebouncer = 7;
     public static final int elevatorToL1 = 7;
-    public static final int elevatorToL2 = 8;
+    public static final int elevatorToL2 = 9;
     // public static final int elevatorToTop = 8;
     public static final int resetLiftToBottomPosition = 9;
     
@@ -89,6 +89,8 @@ public final class Constants {
       public static final double drumRadiusInMeters = Units.inchesToMeters(1);     // sprocket diameter is 2"
       public static final double drumCircumferenceInMeters = 2.0 * Math.PI * drumRadiusInMeters;
 
+      public static final double elevatorSpeed = 0.2;
+      public static final double stopElevatorMotor = 0.;
 
       public static final double MOTION_LIMIT = -0.7;
       public static final double SCORING_MOVEMENT = -0.8;

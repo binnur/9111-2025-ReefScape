@@ -113,6 +113,21 @@ public class ElevatorSubsystem extends SubsystemBase {
         public double liftCurrentAmps = 0.0;
     }
 
+    private void setElevatorMotorTest() {
+        liftMotor.set(ElevatorConstants.elevatorSpeed);
+    }
+
+    private void stopElevatorMotorTest() {
+        liftMotor.set(ElevatorConstants.stopElevatorMotor);
+    }
+
+    public Command runElevatorMotorTest () {
+        return this.startEnd(this::setElevatorMotorTest, this::stopElevatorMotorTest)
+            .withTimeout(1.0);
+    }
+
+
+
     private void updateElevatorIOInfo() {
         ioInfo.liftAtPositionInMeters = liftMotor.getEncoder().getPosition();
         ioInfo.liftVelocityInMetersPerSec = liftMotor.get();     // note: does not get updated during simulation use corresponding liftSimVelocity
