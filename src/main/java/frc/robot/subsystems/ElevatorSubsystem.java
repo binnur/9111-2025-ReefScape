@@ -181,6 +181,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // Runs motors
     public Command moveToSetPointCommand() {
         return run( () -> {
+            System.out.println("Running moveToSetPointCommand");
             feedbackVoltage = liftPidController.calculate(getPosition());
             feedforwardVoltage = liftFFController.calculate(liftPidController.getSetpoint().velocity);
            
@@ -218,7 +219,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public Command moveToPositionCommand(Supplier<ElevatorPosition> goalPositionSupplier) {
        //ioInfo.liftDesiredPositionInMeters = goalPositionSupplier.get().value;
-       System.out.println("moveToPositionCommand");
+       System.out.println("Running moveToPositionCommand");
        desiredLiftLevel = goalPositionSupplier.get().value;
 
         // stop current motion and clear integral values
@@ -226,6 +227,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         liftPidController.reset(getPosition());
         liftPidController.setGoal((goalPositionSupplier.get().value));
 
+        System.out.println("Running Commands.sequence");
         // run the motors until target goal is reached
         return Commands.sequence(
                             moveToSetPointCommand()
@@ -259,7 +261,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         return Commands.runOnce( 
             () -> {
-                System.out.println("setTargetPositionCommand " + liftLevelTarget);
+                System.out.println("Running setTargetPositionCommand " + liftLevelTarget);
                 moveToPositionCommand( () -> liftLevelTarget);
             }); 
     }
