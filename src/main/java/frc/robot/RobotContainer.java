@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.epilogue.Logged;
 import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.ArmRollerSubsystem;
@@ -34,6 +36,8 @@ public class RobotContainer {
   public final ArmRollerSubsystem armRoller = new ArmRollerSubsystem(); // Rename the rollersubsystem class to armRollerSubsystem
 
   public final AlgaeArm algaeArm = new AlgaeArm();
+  private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+
 
   // The autonomous chooser
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -67,9 +71,15 @@ public class RobotContainer {
     // controller. The Y axis of the controller is inverted so that pushing the
     // stick away from you (a negative value) drives the robot forwards (a positive
     // value)
+
+
+
+
+    //  TURN IS TWISTING, TO TURN BACK CHANGE AXIS 2 TO 0
+    // THE INVERTING SYSTEM IS USING THE SPEED NOB WHEN ITS DOWN ITS FACING FORWARD, BUT WHEN ITS UPWARDS IT WILL SWITCH YOUR FRONT SIDE
         driveSubsystem.setDefaultCommand(
           driveSubsystem.driveArcade(
-              driveSubsystem, () -> -driverController.getRawAxis(0), () -> -driverController.getRawAxis(1)));
+              driveSubsystem, () -> -driverController.getRawAxis(0) * driverController.getRawAxis(3), () -> -driverController.getRawAxis(1) * driverController.getRawAxis(3)));
        
    // RollerSubsystem. TODO:
    // Add condition that roller may only roll out to eject coral when the arm is in a down position
@@ -91,6 +101,14 @@ public class RobotContainer {
 
     new JoystickButton(driverController, OperatorConstants.armDown)
       .whileTrue(algaeArm.ArmDown());
+
+    new JoystickButton(driverController, OperatorConstants.elevatorToL1)
+          .onTrue(elevator.runElevatorMotorTest());
+
+    new JoystickButton(driverController, OperatorConstants.elevatorToL2)
+          .onTrue(elevator.setTargetPositionCommand(ElevatorPosition.CORAL_L2));
+
+   
 
    // new JoystickButton(driverController, OperatorConstants.armDownDebouncer)
      // .whileTrue(algaeArm.runDebounceArmDownCmd());
