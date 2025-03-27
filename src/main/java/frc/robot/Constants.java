@@ -86,8 +86,8 @@ public final class Constants {
       public static final int ELEVATOR_FOLLOWER_MOTOR_ID = 8;
       public static final int ELEVATOR_ARM_MOTOR_ID = 9;
       public static final int gearing = 12;
-      public static final double drumRadiusInMeters = Units.inchesToMeters(1);     // sprocket diameter is 2"
-      public static final double drumCircumferenceInMeters = 2.0 * Math.PI * drumRadiusInMeters;
+      public static final double drumDiameterInMeters = Units.inchesToMeters((1.75));     // sprocket diameter is 1.75"
+      public static final double drumCircumferenceInMeters = Math.PI * drumDiameterInMeters;
 
       public static final double elevatorSpeed = 0.2;
       public static final double stopElevatorMotor = 0.;
@@ -96,16 +96,16 @@ public final class Constants {
       public static final double SCORING_MOVEMENT = -0.8;
 
       public static final int MOTOR_ID = 12;
-      public static final boolean MOTOR_INVERTED = false;
+      public static final boolean MOTOR_INVERTED = false; 
       public static final boolean FOLLOWER_MOTOR_INVERTED = true;
-      public static final boolean INVERT_FOLLOWER_OUTPUT = false;
+      
       
       public static enum ElevatorPosition {
         BOTTOM(0.0),      // min height will trigger limit switch
-        INTAKE(0.35),     // coral intake
-        CORAL_L1(0.8),
-        CORAL_L2(1.2),
-        TOP(1.5);        // max height
+        INTAKE(0.3),     // coral intake
+        CORAL_L1(0.3),
+        CORAL_L2(0.3),
+        TOP(0.3);        // max height
   
         public final double value;
   

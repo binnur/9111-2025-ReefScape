@@ -88,9 +88,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         liftMotor.configure(liftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Configure follower motor
-        SparkMaxConfig followerConfig = new SparkMaxConfig();
+         SparkMaxConfig followerConfig = new SparkMaxConfig();
         followerConfig.inverted(ElevatorConstants.FOLLOWER_MOTOR_INVERTED).idleMode(IdleMode.kBrake);
-        followerConfig.follow(liftMotor, ElevatorConstants.FOLLOWER_MOTOR_INVERTED);
+        //followerConfig.follow(liftMotor  , ElevatorConstants.FOLLOWER_MOTOR_INVERTED);
+        followerConfig.encoder
+         .positionConversionFactor(ElevatorConstants.liftPositionConversionFactor)
+            .velocityConversionFactor(ElevatorConstants.liftVelocityConversionFactor / 60.0);
         liftFollowerMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
          
         /* 
@@ -106,6 +109,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public static class ElevatorIOInfo {
         public double liftAtPositionInMeters = 0.0;
        // public double liftDesiredPositionInMeters = ElevatorPosition.BOTTOM.value;
+       public double followerLiftAtPositionInMeters = 0.0;
         public double liftSimVelocityInMetersPerSec = 0.0;
         public double liftVelocityInMetersPerSec = 0.0;
         public double liftAppliedVolts = 0.0;
@@ -129,6 +133,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private void updateElevatorIOInfo() {
         ioInfo.liftAtPositionInMeters = liftMotor.getEncoder().getPosition();
+        ioInfo.followerLiftAtPositionInMeters = liftFollowerMotor.getEncoder().getPosition();
         ioInfo.liftVelocityInMetersPerSec = liftMotor.get();     // note: does not get updated during simulation use corresponding liftSimVelocity
         ioInfo.liftAppliedVolts = liftMotor.getAppliedOutput();
         ioInfo.liftCurrentAmps = liftMotor.getOutputCurrent();
@@ -167,7 +172,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void periodic(){
         // note: default command moveToSetPointCommand() automatically runs
-        //updateElevatorIOInfo();
+        updateElevatorIOInfo();
         
     }
 
@@ -180,42 +185,17 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
 
         liftMotor.setVoltage(voltage);
+        liftFollowerMotor.setVoltage(0-voltage);
     }
 
     
 
-    public Command moveToCurrentGoalCommand() {
-        return run(() -> {
-            feedbackVoltage = pidController.calculate(getPosition());
-         //   feedforwardVoltage = feedforwardController.calculate(pidController.getSetpoint().velocity);
-            setVoltage(feedbackVoltage + feedforwardVoltage);
-        }).withName("elevator.moveToCurrentGoal");
-    }
 
     // Runs motors
     public Command moveToSetPointCommand() {
         return run( () -> {
-            System.out.println("Running moveToSetPointCommand");
             feedbackVoltage = liftPidController.calculate(getPosition());
-            feedforwardVoltage = liftFFController.calculate(liftPidController.getSetpoint().velocity);
-           
-
-           
-            // Old math.signum function
-            /*
-             * if (Math.abs(feedbackVoltage) < 1 && feedbackVoltage != 0) {
-                feedforwardVoltage = Math.signum(feedbackVoltage);
-                
-             * 
-             */
-
-            // CORRECTED CODE (uses velocity only)
-            feedforwardVoltage = liftFFController.calculate(
-                liftPidController.getSetpoint().velocity  // No acceleration needed!
-            );
-            
-            
-
+            feedforwardVoltage = liftFFController.calculate(liftPidController.getSetpoint().velocity);     
             setVoltage(feedbackVoltage+feedforwardVoltage);
         }).withName("elevator.moveToCurrentGoal");
     }
@@ -231,7 +211,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public Command moveToPositionCommand(Supplier<ElevatorPosition> goalPositionSupplier) {
        //ioInfo.liftDesiredPositionInMeters = goalPositionSupplier.get().value;
-       System.out.println("Running moveToPositionCommand");
+       //System.out.println("Running moveToPositionCommand");
        desiredLiftLevel = goalPositionSupplier.get().value;
 
         // stop current motion and clear integral values
@@ -274,6 +254,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         
             System.out.println("Running setTargetPositionCommand " + liftLevelTarget);
             return moveToPositionCommand( () -> liftLevelTarget);
+
+       // return run { () -> } 
     }
 
     
