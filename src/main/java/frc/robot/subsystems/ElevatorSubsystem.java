@@ -116,9 +116,9 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT)     // setting to 50 per rev code
                 .voltageCompensation(12.0);
         //followerConfig.follow(liftMotor  , ElevatorConstants.FOLLOWER_MOTOR_INVERTED);    // regardless of invert fallower output, i.e. true/false value, motor always moved positive direction
-        liftFollowerMotorConfig.encoder      // using native rotation values for comparasion/debugging
-            .positionConversionFactor(1)
-            .velocityConversionFactor(1 / 60.0);
+        // liftFollowerMotorConfig.encoder      // using native rotation values for comparasion/debugging
+        //     .positionConversionFactor(1)
+        //     .velocityConversionFactor(1 / 60.0);
         liftFollowerMotor.configure(liftFollowerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // construct simulation 
