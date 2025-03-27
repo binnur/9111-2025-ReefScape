@@ -102,6 +102,9 @@ public class RobotContainer {
     new JoystickButton(driverController, OperatorConstants.armDown)
       .whileTrue(algaeArm.ArmDown());
 
+    // Setup elevator bindings & default command
+    elevator.setDefaultCommand(elevator.moveToSetPointCommand());
+
     new JoystickButton(driverController, OperatorConstants.elevatorToL1)
           .onTrue(elevator.setTargetPositionCommand(ElevatorPosition.CORAL_L1));
 
@@ -123,6 +126,7 @@ public class RobotContainer {
     autoChooser.addOption("Arcade Drive (no rotation @ 50%)", Autos.driveArcadeCmd(driveSubsystem));
     autoChooser.addOption("Drive FWD 3 meters", Autos.driveFwd3meters(driveSubsystem));
     autoChooser.addOption("Reset Encoders",  Autos.resetEncoders(driveSubsystem));
+    autoChooser.addOption("Reset Elevator Encoders", Autos.resetLiftEncoders(elevator));
   }
   
   /**

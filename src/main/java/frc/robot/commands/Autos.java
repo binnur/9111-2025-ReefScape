@@ -8,6 +8,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
@@ -35,5 +36,9 @@ public final class Autos {
   public static final Command driveFwd3meters(DriveSubsystem driveSubsystem) {
     return driveSubsystem.driveFwdInMetersCmd(driveSubsystem, () -> 3.0);
   }
+
+  public static final Command resetLiftEncoders(ElevatorSubsystem elevatorSubsystem) {
+    return Commands.run( () -> elevatorSubsystem.resetEncoders() );
+   }
 
 }

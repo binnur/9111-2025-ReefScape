@@ -104,7 +104,7 @@ public final class Constants {
         BOTTOM(0.0),      // min height will trigger limit switch
         INTAKE(0.3),     // coral intake
         CORAL_L1(0.3),
-        CORAL_L2(0.3),
+        CORAL_L2(0.6),
         TOP(0.3);        // max height
   
         public final double value;
@@ -122,14 +122,14 @@ public final class Constants {
         public static final double MASS_KG = Units.lbsToKilograms(10); // TODO
         public static final double COM_DISTANCE_METERS = Units.inchesToMeters(6); // TODO
         public static final double MOI = SingleJointedArmSim.estimateMOI(COM_DISTANCE_METERS, MASS_KG);
-        public static final int encoderCountsPerRevolution = 42 * (int)ElevatorConstants.gearing;     // one rotation is 8192 ticks of the hardware encoder
+        public static final int encoderCountsPerRevolution = 1 * (int)ElevatorConstants.gearing;     // one count is 1.0 rotation (42 encoder ticks) -- motor controller normalizes to units of rotation
         public static final double liftPositionConversionFactor = ElevatorConstants.drumCircumferenceInMeters / encoderCountsPerRevolution;
         public static final double liftVelocityConversionFactor = ElevatorConstants.drumCircumferenceInMeters / encoderCountsPerRevolution;     // RPM (per minute)
 
         public static final double MIN_ANGLE_RADIANS = -Math.PI / 2.0;
         public static final double MAX_ANGLE_RADIANS = Math.PI / 2.0;
 
-        public static final int CURRENT_LIMIT = 4;
+        public static final int CURRENT_LIMIT = 50;     // was: 4 --> updating per REV sample kitbot code
 
         /*
         kS = Static friction (voltage to overcome stiction)
